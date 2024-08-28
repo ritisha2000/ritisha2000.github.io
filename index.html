@@ -4,20 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coursemap Network</title>
-    <style>
-        svg {
-            width: 100%;
-            height: 600px;
-            border: 1px solid darkblue;
-        }
-    </style>
+    <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
-    <h1>Test Network Visualization</h1>
-    <svg></svg> 
+    <header>
+        <h1>Test Coursemap</h1>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li>
+                    <label for="name">Specialization</label>
+                </li>
+                <li>
+                    <div class="dropdown_container">
+                        <select class="dropdown" class="spec_dropdown" id="spec_dropdown">
+                          <option>All Specializations</option>
+                        </select>
+                    </div>
+                </li>
+                <li>
+                    <label for="name">Keywords</label>
+                </li>
+                <li>
+                    <input class="input" type="text" id="relDesc" name="relDesc"/>
+                </li>
+                <li>
+                    <div class="center-content">
+                        <button class="button" onclick="filterByDescription()">Filter</button>
+                    </div>
+                </li>
+            </ul>
+            <div class="info-box" id="course-info"></div>
+            <br>
+            <ul>
+                <li>
+                    <div class="center-content">
+                        <button class="button" onclick="resetPage()">Reset Coursemap</button>
+                    </div>
+                </li>
+            </ul>
+        </aside>
+        <main class="content">
+            <h2>Coursemap</h2>
+            <div class="svg-container" id="course-map-container">
+                <svg></svg>
+            </div>
+        </main>
+    </div>
 
     <!-- D3.js library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 </html>
