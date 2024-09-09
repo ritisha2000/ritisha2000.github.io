@@ -165,12 +165,21 @@ function createNetwork(data) {
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
     .on("click", function(event, d) {
         show_course_info(d, this);
+        event.stopPropagation(); // Prevent click from bubbling up to the document
     })
     .on("mouseover", function(event, d) {
         highlight_nodes(d, this);
     })
     .on("mouseout", function() {
         reset_highlighting();
+    });
+
+    // Add click event listener to the document
+    d3.select(document).on("click", function(event) {
+        // Hide course info if the click is outside of the nodes
+        if (!d3.select(event.target).classed('node')) {
+            hide_course_info();
+        }
     });
 
     // Append circles to the nodes
@@ -210,6 +219,14 @@ function createNetwork(data) {
         keywords.textContent = d.keywords;
         info.appendChild(keywords);
     }
+    
+    // Hide course info when click is outside the nodes
+    function hide_course_info() {
+        var info = document.getElementById("course-info");
+        var para = info.querySelectorAll('p');
+        para.forEach(function(p) {
+            p.remove();
+        })};
 
     // Highlight nodes and links
     function highlight_nodes(d, clickedNode) {
