@@ -3,6 +3,7 @@ import argparse
 import sys
 import re
 import json
+import numpy as np
 
 def parse_args(args):
     parser = argparse.ArgumentParser(
@@ -91,7 +92,7 @@ def exrtact_requisites(course_full_list):
     )
 
     # Pattern to remove sentence
-    pattern = r'\b[A-Z]{4}\s\d{3}\sis\srecommended\.'
+    pattern = r'\b[A-Z]{4}\s\d{3}\sis\srecommended\.?'
     # Remove the sentence if present
     course_full_list.loc[:, 'reqs'] = course_full_list['reqs'].str.replace(pattern, '', regex=True)
 
@@ -115,6 +116,19 @@ def exrtact_requisites(course_full_list):
     course_full_list = course_full_list.drop(columns=['reqs', 'prereqs', 'coreqs'])
 
     return course_full_list
+
+def reformat_course_code(code):
+    # Check if code is in the correct format
+    if re.match(r'^[A-Z]{4}_V \d{3}$', code):
+        return code
+    # Try to extract the department and course number
+    match = re.match(r'^([A-Z]{4})(\d{3})$', code)
+    if match:
+        return f'{match.group(1)}_V {match.group(2)}'
+    return code
+
+def fix_courses(courses):
+    return [reformat_course_code(course) for course in courses]
 
 def to_json(course_map_df):
     nodes = []
@@ -172,7 +186,18 @@ def main():
 
     course_full_list = merge_files(course_data, course_themes)
     course_map_df = exrtact_requisites(course_full_list)
+
+    # Minimizing flags to check
+    course_map_df['flag_to_check'] = course_map_df['flag'].apply(
+        lambda x: re.findall(r'[A-Z]{4}\s*\d{3}', str(x)) if isinstance(x, str) else np.nan
+    )
+
+    # Fixing irregular course codes
+    course_map_df['prereq_courses'] = course_map_df['prereq_courses'].apply(fix_courses)
+    course_map_df['coreq_courses'] = course_map_df['coreq_courses'].apply(fix_courses)
+
     course_map_df.to_csv('data/data.csv', index=False)
+
     course_map_json = to_json(course_map_df)
 
     # Path to the output JSON file
