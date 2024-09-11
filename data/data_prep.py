@@ -172,6 +172,7 @@ def main():
 
     course_full_list = merge_files(course_data, course_themes)
     course_map_df = exrtact_requisites(course_full_list)
+    course_map_df.to_csv('data/data.csv', index=False)
     course_map_json = to_json(course_map_df)
 
     # Path to the output JSON file
