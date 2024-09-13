@@ -18,8 +18,6 @@ d3.json("data/course_data.json").then(function(courseData) {
     var inputDesc = document.getElementById("relDesc");
     let filteredCourseData = courseData;
 
-    const keywords = inputDesc.value.toLocaleLowerCase().split(", ");
-
     // Create an SVG container
     let svg = d3.select("svg")
         .attr("width", width + margin.left + margin.right)
@@ -115,18 +113,18 @@ d3.json("data/course_data.json").then(function(courseData) {
             var list_item = document.createElement('p');
             list_item.className = "course_name";
             list_item.setAttribute("id", d.course_id);
-            list_item.textContent = d.course_name;
+            list_item.textContent = d.course_id;
             info.appendChild(list_item);
 
             var list_item = document.createElement('p');
-            list_item.className = "spec_name";
-            list_item.textContent = d.spec.join(", ");
+            list_item.className = "section_title";
+            list_item.textContent = d.section_title;
             info.appendChild(list_item);
 
-            var keywords = document.createElement('p');
-            keywords.className = "info_content";
-            keywords.textContent = d.keywords;
-            info.appendChild(keywords);
+            var course_desc = document.createElement('p');
+            course_desc.className = "description";
+            course_desc.textContent = d.description;
+            info.appendChild(course_desc);
         }
         
         // Hide course info when click is outside the nodes
