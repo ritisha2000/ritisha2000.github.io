@@ -65,8 +65,8 @@ header {
     align-items: start; 
     background-color: #e0e1dd;
     color: #0d1b2a;
-    padding-left: 30px;
-    width: 15%;
+    padding-left: 10px;
+    width: 20%;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     height: 100%; 
 }
@@ -82,18 +82,18 @@ header {
 .info-box {
     background-color: #ffffff;
     color: #0d1b2a;
-    width: 80%;
+    width: 90%;
     height: 300px;
     border-radius:5px;
     box-shadow: none;
     text-indent: 0;
-    font-size: small;
-    padding: 10px;
+    font-size: 12px;
+    padding: 5px;
 }
 
 .content {
     flex: 1;
-    padding-left: 30px;
+    padding-left: 10px;
     padding-right: 10px;
     background-color: #f4f4f4;
 }
