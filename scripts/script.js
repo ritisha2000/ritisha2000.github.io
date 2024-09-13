@@ -1,3 +1,4 @@
+let resetPage;
 d3.json("data/course_data.json").then(function(courseData) {
     const isEmpty = str => !str.trim().length;
 
@@ -257,11 +258,11 @@ d3.json("data/course_data.json").then(function(courseData) {
         }
     };
 
-    function resetPage() {
+    document.getElementById("reset_button").addEventListener("click", function(){
         console.log("Resetting coursemap");
 
         // Reset filter selects
-        document.getElementById("spec_dropdown").selectedIndex = 0;
+        document.getElementById("course_code_dropdown").selectedIndex = 0;
         // Clear selected keywords
         document.getElementById("relDesc").value = "";
         // Clear course info box
@@ -273,5 +274,5 @@ d3.json("data/course_data.json").then(function(courseData) {
 
         // Recreate network
         createNetwork(courseData);
-    };
+    });
 })
