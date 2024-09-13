@@ -226,15 +226,15 @@ d3.json("data/course_data.json").then(function(courseData) {
     selectedCourseCode.addEventListener("change", onChange);
     onChange();
 
-    function filterByDescription() {
+    document.getElementById("desc_filter_button").addEventListener("click", function(){
         console.log("In filterByDescription function");
-        filteredCourseData = {...specFilteredCourseData}
+        filteredCourseData = {...codeFilteredCourseData}
         const userKeywords = inputDesc.value.toLocaleLowerCase().split(", ");
         if (isEmpty(document.getElementById("relDesc").value)){
             onChange();
         } else {
             filteredCourseData.nodes = filteredCourseData.nodes.filter((d) => {
-                const courseKeywords = d.keywords.toLocaleLowerCase().split(/[\s,]+/);
+                const courseKeywords = d.description.toLocaleLowerCase().split(/[\s,]+/);
                 return userKeywords.every(word => courseKeywords.includes(word));
             });
             const filteredNodeIds = new Set(filteredCourseData.nodes.map(d => d.id));
@@ -249,14 +249,14 @@ d3.json("data/course_data.json").then(function(courseData) {
         var info = document.getElementById("course-info");
         var para = info.querySelectorAll('p');
         if (para.length > 0){
-            const nodesNetwork = Array.from(new Set(filteredCourseData.nodes.map(d => d.id)));
-            if (!(nodesNetwork.includes(para[0].id))){
+            const nodesNetwork = Array.from(new Set(filteredCourseData.nodes.map(d => d.course_id)));
+            if (!(nodesNetwork.includes(para[0].course_id))){
                 para.forEach(function(p) {
                     p.remove();
                 });        
             }
         }
-    };
+    });
 
     document.getElementById("reset_button").addEventListener("click", function(){
         console.log("Resetting coursemap");
