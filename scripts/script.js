@@ -227,7 +227,6 @@ d3.json("data/course_data.json").then(function(courseData) {
     onChange();
 
     document.getElementById("desc_filter_button").addEventListener("click", function(){
-        console.log("In filterByDescription function");
         filteredCourseData = {...codeFilteredCourseData}
         const userKeywords = inputDesc.value.toLocaleLowerCase().split(", ");
         if (isEmpty(document.getElementById("relDesc").value)){
@@ -259,8 +258,6 @@ d3.json("data/course_data.json").then(function(courseData) {
     });
 
     document.getElementById("reset_button").addEventListener("click", function(){
-        console.log("Resetting coursemap");
-
         // Reset filter selects
         document.getElementById("course_code_dropdown").selectedIndex = 0;
         // Clear selected keywords
