@@ -94,7 +94,7 @@ d3.json("data/course_data.json").then(function(courseData) {
         nodes.append("circle")
         .attr("r", 10)
         .attr("fill", "#FFFFFF")
-        .attr("stroke", "#000000");
+        .attr("stroke", "#FFFFFF");
 
         // Append labels to the nodes
         nodes.append("text")
@@ -122,6 +122,11 @@ d3.json("data/course_data.json").then(function(courseData) {
             list_item.textContent = d.section_title;
             info.appendChild(list_item);
 
+            // var x_y = document.createElement('p');
+            // x_y.className = "x_y";
+            // x_y.textContent = (d.x).toString() + " " + (d.y).toString();
+            // info.appendChild(x_y);
+
             var course_desc = document.createElement('p');
             course_desc.className = "description";
             course_desc.textContent = d.description;
@@ -143,8 +148,7 @@ d3.json("data/course_data.json").then(function(courseData) {
 
             // Highlight the clicked node
             d3.select(clickedNode).select("circle")
-                .attr("fill", "#0d1b2a")
-                .attr("stroke", "black");
+                .attr("fill", "#0d1b2a");
 
             // Highlight connected nodes
             let connectedNodes = new Set();
@@ -157,8 +161,7 @@ d3.json("data/course_data.json").then(function(courseData) {
             svg.selectAll("g.node")
                 .select("circle")
                 .filter(n => connectedNodes.has(n.course_id) || n.course_id === d.course_id)
-                .attr("fill", "#b2c7db")
-                .attr("stroke", "black");
+                .attr("fill", "#b2c7db");
 
             svg.selectAll("g.node")
                 .select("text")
@@ -176,7 +179,7 @@ d3.json("data/course_data.json").then(function(courseData) {
             // Reset all nodes and links to default style
             svg.selectAll("circle")
                 .attr("fill", "#FFFFFF")
-                .attr("stroke", "#000000");
+                .attr("stroke", "#FFFFFF");
             svg.selectAll("text")
                 .attr("fill", "#000000");
             svg.selectAll("line")
