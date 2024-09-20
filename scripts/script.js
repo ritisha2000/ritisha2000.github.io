@@ -230,14 +230,17 @@ d3.json("data/course_data.json").then(function(courseData) {
     onChange();
 
     document.getElementById("desc_filter_button").addEventListener("click", function(){
+        console.log("Clicked!");
         filteredCourseData = {...codeFilteredCourseData}
         const userKeywords = inputDesc.value.toLocaleLowerCase().split(", ");
         if (isEmpty(document.getElementById("relDesc").value)){
             onChange();
         } else {
             filteredCourseData.nodes = filteredCourseData.nodes.filter((d) => {
-                const courseKeywords = d.description.toLocaleLowerCase().split(/[\s,]+/);
-                return userKeywords.every(word => courseKeywords.includes(word));
+                if (d.description != null){
+                    const courseKeywords = d.description.toLocaleLowerCase().split(/[\s,]+/);
+                    return userKeywords.every(word => courseKeywords.includes(word));
+                }
             });
             const filteredNodeIds = new Set(filteredCourseData.nodes.map(d => d.id));
             filteredCourseData.links = filteredCourseData.links.filter((link) => {
