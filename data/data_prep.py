@@ -33,7 +33,7 @@ def format_reqs(df, colname):
     temp = temp.explode(colname).dropna().rename(columns={
         "course_id": "target",
         colname: "source"
-    }).dropna().copy()
+    }).replace('', np.nan).dropna().copy()
     temp["link_type"] = colname.split('_')[0]
 
     return temp
@@ -104,6 +104,12 @@ def extract_reqs(text, keyword):
         return match.group(0) if match else ''
     return ''
 
+def split_course_code(course_code):
+    try:
+        return [re.search(r'[A-Z]{4}', course_code).group(0), re.search(r'\d{3}', course_code).group(0)]
+    except:
+        return None
+
 def find_requisites(df):
     # Separate requisites and description
     course_description = df[["course_id", "description"]].copy()
@@ -139,7 +145,7 @@ def find_requisites(df):
 
     df = pd.concat([df, pd.DataFrame({
         "course_id": missed_courses, 
-        "course_subject": [x.split(" ")[0] for x in missed_courses]
+        "course_subject": [split_course_code(x)[0] if split_course_code(x) != None else np.nan for x in missed_courses]
     })])
 
     return df
@@ -147,8 +153,9 @@ def find_requisites(df):
 def clean_course_data(df):
     # Format the column names
     df.columns = [x.strip().lower().replace(" ", "_") for x in df.columns.tolist()]
+
     # Create id column
-    df["course_id"] = df["course_subject"] + df["course_number"].astype(str)
+    df["course_id"] = df["course_subject"] + " " + df["course_number"].astype(str)
     df["course_id"] = df["course_id"].str.replace("_V", "")
 
     # Only keep undergraduate courses
@@ -182,12 +189,16 @@ def main():
 
     # Keep only relevant columns
     course_data = course_data[[
-        "course_id", "course_subject", "course_number", "section_title", 'eligbility_rules', 
+        "course_id", "course_subject", "course_number", "section_title", "eligbility_rules", 
         "term", "delivery_mode", "description", "prereq_courses", "coreq_courses"
     ]].copy()
 
     print(f"Adding coordinates...")
     course_data = add_node_coordinates(course_data)
+
+    
+    course_data["course_id"] = course_data["course_id"].str.strip().replace("", np.nan)
+    course_data.dropna(subset="course_id", inplace=True)
 
     print(f"Converting to JSON...")
     course_json = convert_to_json(course_data)
