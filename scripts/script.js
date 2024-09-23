@@ -230,7 +230,6 @@ d3.json("data/course_data.json").then(function(courseData) {
     onChange();
 
     document.getElementById("desc_filter_button").addEventListener("click", function(){
-        console.log("Clicked!");
         filteredCourseData = {...codeFilteredCourseData}
         const userKeywords = inputDesc.value.toLocaleLowerCase().split(", ");
         if (isEmpty(document.getElementById("relDesc").value)){
@@ -238,7 +237,7 @@ d3.json("data/course_data.json").then(function(courseData) {
         } else {
             filteredCourseData.nodes = filteredCourseData.nodes.filter((d) => {
                 if (d.description != null){
-                    const courseKeywords = d.description.toLocaleLowerCase().split(/[\s,]+/);
+                    const courseKeywords = d.description.toLocaleLowerCase().split(/[\s,]+/) + d.section_title.toLocaleLowerCase().split(/[\s,]+/);
                     return userKeywords.every(word => courseKeywords.includes(word));
                 }
             });
@@ -279,3 +278,20 @@ d3.json("data/course_data.json").then(function(courseData) {
         createNetwork(courseData);
     });
 })
+
+function toggleDropdown() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
