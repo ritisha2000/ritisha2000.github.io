@@ -100,7 +100,7 @@ d3.json("data/course_data.json").then(function(courseData) {
         nodes.append("text")
         .attr("text-anchor", "middle")
         .text(d => d.course_id)
-        .attr("font-size", "12px")
+        .attr("font-size", "10px")
         .attr("fill", "#000000")
         .attr("y", 4); 
 
