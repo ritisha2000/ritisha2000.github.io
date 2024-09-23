@@ -122,11 +122,6 @@ d3.json("data/course_data.json").then(function(courseData) {
             list_item.textContent = d.section_title;
             info.appendChild(list_item);
 
-            // var x_y = document.createElement('p');
-            // x_y.className = "x_y";
-            // x_y.textContent = (d.x).toString() + " " + (d.y).toString();
-            // info.appendChild(x_y);
-
             var course_desc = document.createElement('p');
             course_desc.className = "description";
             course_desc.textContent = d.description;
@@ -278,20 +273,3 @@ d3.json("data/course_data.json").then(function(courseData) {
         createNetwork(courseData);
     });
 })
-
-function toggleDropdown() {
-    document.getElementById("myDropdown").classList.toggle("show");
-}
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-        const dropdowns = document.getElementsByClassName("dropdown-content");
-        for (let i = 0; i < dropdowns.length; i++) {
-            const openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
-        }
-    }
-}
