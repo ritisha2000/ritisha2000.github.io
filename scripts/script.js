@@ -202,17 +202,13 @@ d3.json("data/course_data.json").then(function(courseData) {
             };
         }
 
-        if (!(isEmpty(document.getElementById("relDesc").value))){
-            filterByDescription();
-        } else {
-            createNetwork(codeFilteredCourseData);
-        }
+        createNetwork(codeFilteredCourseData);
 
         // Clear course info box if nodes not in the network
         var info = document.getElementById("course-info");
         var para = info.querySelectorAll('p');
         if (para.length > 0){
-            const nodesNetwork = Array.from(new Set(codeFilteredCourseData.nodes.map(d => d.id)));
+            const nodesNetwork = Array.from(new Set(codeFilteredCourseData.nodes.map(d => d.course_id)));
             if (!(nodesNetwork.includes(para[0].id))){
                 para.forEach(function(p) {
                     p.remove();
@@ -236,7 +232,7 @@ d3.json("data/course_data.json").then(function(courseData) {
                     return userKeywords.every(word => courseKeywords.includes(word));
                 }
             });
-            const filteredNodeIds = new Set(filteredCourseData.nodes.map(d => d.id));
+            const filteredNodeIds = new Set(filteredCourseData.nodes.map(d => d.course_id));
             filteredCourseData.links = filteredCourseData.links.filter((link) => {
                 return filteredNodeIds.has(link.source) && filteredNodeIds.has(link.target);
             });
