@@ -27,7 +27,7 @@ d3.json("data/course_data.json").then(function(courseData) {
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Add course codes to course code dropdown
-    const course_codes = [...new Set(courseData["nodes"].map(item => item.course_subject))];
+    const course_codes = [...new Set(courseData["nodes"].map(item => item.course_subject))].sort();
     course_codes.forEach(d => {
         codeContainer = document.getElementById('course_code_dropdown');
         const option = document.createElement('option');
