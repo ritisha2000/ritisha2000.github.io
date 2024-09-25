@@ -27,6 +27,13 @@ def parse_args(args):
     args = parser.parse_args(args)
     return args
 
+SCIENCE_COURSE_CODES = [
+    "ASIC", "ASTR", "ATSC", "BIOF", "BIOL", "BIOT", "BOTA", 
+    "CHEM", "COGS", "CPSC", "CSPW", "DSCI", "EOSC", "ENPH", 
+    "ENVR", "FISH", "GSAT", "ISCI", "MRNE", "MATH", "MICB", 
+    "NSCI", "PHYS", "RES", "SCIE", "STAT", "ZOOL"
+]
+
 def format_reqs(df, colname):
     temp = df[["course_id", colname]].copy()
     temp[colname] = temp[colname].str.split('; ')
@@ -125,11 +132,12 @@ def find_requisites(df):
     course_description['prereqs'] = course_description['reqs'].apply(lambda x: extract_reqs(x, 'Prerequisite'))
     course_description['coreqs'] = course_description['reqs'].apply(lambda x: extract_reqs(x, 'Corequisite'))
     
+    course_code_regex  = '((' + '|'.join(SCIENCE_COURSE_CODES) + ')\s*\d{3})'
     course_description['prereq_courses'] = course_description['prereqs'].apply(
-        lambda x: re.findall(r'[A-Z]{4}\s*\d{3}', str(x)) if isinstance(x, str) else []
+        lambda x: [m[0] for m in re.finditer(course_code_regex, str(x))] if isinstance(x, str) else []
     )
     course_description['coreq_courses'] = course_description['coreqs'].apply(
-        lambda x: re.findall(r'[A-Z]{4}\s*\d{3}', str(x)) if isinstance(x, str) else []
+        lambda x: [m[0] for m in re.finditer(course_code_regex, str(x))] if isinstance(x, str) else []
     )
 
     course_description.drop(columns=['prereqs', 'coreqs', "description"], inplace=True)
