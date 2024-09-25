@@ -36,6 +36,37 @@ d3.json("data/course_data.json").then(function(courseData) {
         codeContainer.appendChild(option); 
     });
 
+    function createMapHeader(course_code_value, keyword_value){
+        console.log(course_code_value);
+        console.log(keyword_value);
+
+        header_div = document.getElementById("main-content-header");
+
+        // Remove previous header
+        var header_content = header_div.querySelectorAll('h3');
+        header_content.forEach(function(h) {
+            h.remove();
+        });
+
+        // Add new header according to map
+        var map_header = document.createElement('h3');
+        map_header.className = "map-header";
+        map_header.setAttribute("id", "map-header");
+    
+        if (course_code_value == "All Course Codes" && keyword_value == ""){
+            map_header.textContent = `All course codes`;
+        } else if (course_code_value != "All Course Codes" && keyword_value == ""){
+            map_header.textContent = `Filtered for course code, ${course_code_value}`;
+        } else if (course_code_value == "All Course Codes" && keyword_value != "") {
+            map_header.textContent = `Filtered for keywords, ${keyword_value}`;
+        } else {
+            map_header.textContent = `Filtered for course code, ${course_code_value}, and keywords, ${keyword_value}`;
+        }
+        header_div.appendChild(map_header);
+    };
+
+    createMapHeader("All Course Codes", "");
+
     function createNetwork(courseData) {
         console.log("In createNetwork function");
         // Start with empty container
@@ -181,6 +212,8 @@ d3.json("data/course_data.json").then(function(courseData) {
                 .attr("stroke", "#748ba8")
                 .attr("stroke-opacity", 0.6);
         }
+
+        createMapHeader(selectedCourseCode.value, document.getElementById("relDesc").value);
     };
 
     function onChange() {
