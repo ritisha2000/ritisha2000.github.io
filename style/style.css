@@ -115,6 +115,7 @@ h3 {
     text-indent: 0;
     font-size: 12px;
     padding: 5px;
+    overflow: auto;
 }
 
 .content {
@@ -134,15 +135,6 @@ h3 {
     margin: 0;
     padding: 0px 0;
     overflow: hidden;  
-}
-
-.dropdown {
-    border: none;
-    min-width: 250px;
-    min-height: 30px;
-    background-color: #ffff;
-    border-radius:5px;
-    font-family: 'Open Sans', sans-serif;
 }
 
 .input {
@@ -166,4 +158,39 @@ h3 {
 
 .center-content {
     text-align: center;
+}
+
+/* Dropdown button */
+.dropbtn {
+    background-color: #f9f9f9;
+    color: black;
+    width: 250px; /* Width of the button */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 8px; /* Add this line to round the corners */
+}
+
+/* Dropdown container */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 250px;
+    max-height: 200px; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Checkbox options */
+.dropdown-content label {
+    display: block;
+    padding: 10px;
+}
+
+/* Show the dropdown when clicked */
+.dropdown-content.show {
+    display: block;
 }
