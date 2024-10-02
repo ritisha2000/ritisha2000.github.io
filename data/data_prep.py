@@ -85,23 +85,20 @@ def scale_coordinates(df, min_val=10, max_x_val=700, max_y_val=400):
 def add_node_coordinates(df):
     course_json = convert_to_json(df)
 
-    nodes = [node["course_id"].replace(" ", "") for node in course_json["nodes"] if node["course_id"] != ""]
-    rels = [
-        (link["target"].replace(" ", ""), link["source"].replace(" ", "")) for link in course_json["links"]
-    ]
-
-    g = nx.DiGraph()
-    g.add_nodes_from(nodes)
-    g.add_edges_from(rels) 
+    nodes = course_json["nodes"]
+    edges = course_json["links"]
+    
+    G = nx.DiGraph()
+    for node in nodes:
+        G.add_node(node["course_id"], course_name=node["course_id"])
+    for edge in edges:
+        G.add_edge(edge["source"], edge["target"])
 
     ## ! EDIT LAYOUT ! ##
-    pos = graphviz_layout(g, prog="dot")
-    pos_jittered = add_jitter(pos, jitter_strength=1.0)
-    node_positions = pd.DataFrame({
-        "course_id": list(g.nodes()),
-        "x": [pos_jittered[node][0] for node in g.nodes()],
-        "y": [pos_jittered[node][1] for node in g.nodes()],
-    })
+    pos = nx.kamada_kawai_layout(G)
+    pos_jittered = add_jitter(pos, jitter_strength=0.5)
+    node_positions = pd.DataFrame(pos_jittered).T.reset_index()
+    node_positions.columns = ['course_id', 'x', 'y']
 
     df = df.merge(node_positions, on="course_id", how="left")
     df = scale_coordinates(df)
