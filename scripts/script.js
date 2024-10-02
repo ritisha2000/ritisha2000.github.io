@@ -1,5 +1,5 @@
 // Calculate margins and create the SVG container before the .then() function since it's not dependent on the data.
-let svg_dimensions = document.getElementById("course-map-container").getBoundingClientRect();
+let svg_dimensions = document.getElementById("course_map_svg").getBoundingClientRect();
 let margin = { top: svg_dimensions.height / 10, right: svg_dimensions.width / 10, bottom: svg_dimensions.height / 10, left: svg_dimensions.width / 10 };
 let width = svg_dimensions.width - margin.left - margin.right;
 let height = svg_dimensions.height - margin.top - margin.bottom;
@@ -109,46 +109,93 @@ d3.json("data/course_data.json").then(function(courseData) {
     createMapHeader("All Course Codes", "");
 
     function createNetwork(courseData) {
-        const { nodes, links } = courseData; // Destructure courseData
+        const { nodes, links } = courseData; 
         console.log("In createNetwork function");
-        svg.selectAll("*").remove(); // Clear previous content
+        // Clear previous content
+        svg.selectAll("*").remove(); 
     
-        // Create links (edges)
-        svg.append("g")
-            .attr("stroke", "#748ba8")
-            .attr("stroke-opacity", 0.6)
+        // Create a simulation
+        const simulation = d3.forceSimulation()
+            .force('link', d3.forceLink().distance(100).id(d => d.course_id))
+            .force('charge', d3.forceManyBody().strength(-10))
+            .force('center', d3.forceCenter((svg_dimensions.width / 2) - 100, (svg_dimensions.height / 2)));
+    
+        const link = svg.append("g")
+            .attr("class", "links")
             .selectAll("line")
             .data(links)
             .enter().append("line")
-            .attr("x1", d => nodes.find(n => n.course_id === d.source)?.x || 0)
-            .attr("y1", d => nodes.find(n => n.course_id === d.source)?.y || 0)
-            .attr("x2", d => nodes.find(n => n.course_id === d.target)?.x || 0)
-            .attr("y2", d => nodes.find(n => n.course_id === d.target)?.y || 0);
+            .attr("stroke", "#748ba8");
     
-        // Create nodes and labels
-        let nodeGroup = svg.selectAll("g.node")
+        let node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("g") 
             .data(nodes)
-            .enter().append("g")
-            .attr("class", "node")
-            .attr("transform", d => `translate(${d.x}, ${d.y})`)
+            .enter().append("g") 
+            .attr("class", "node"); 
+    
+        node.append("circle")
+            .attr("r", 7)
+            .attr("fill", "#FFFFFF")
+            .attr("stroke", "#FFFFFF")
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended))
             .on("click", function(event, d) {
                 show_course_info(d, this);
                 event.stopPropagation(); // Prevent click from bubbling up to the document
             })
             .on("mouseover", event => highlight_nodes(event.currentTarget.__data__, event.currentTarget))
             .on("mouseout", reset_highlighting);
-    
-        nodeGroup.append("circle")
-            .attr("r", 10)
-            .attr("fill", "#FFFFFF")
-            .attr("stroke", "#FFFFFF");
-    
-        nodeGroup.append("text")
+        
+        node.append("text")
             .attr("text-anchor", "middle")
             .text(d => d.course_id)
             .attr("font-size", "10px")
             .attr("fill", "#000000")
-            .attr("y", 4);
+            .attr("y", 4)
+            .on("mouseover", event => highlight_nodes(event.currentTarget.__data__, event.currentTarget))
+            .on("mouseout", reset_highlighting)
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended));
+        
+        simulation
+            .nodes(nodes)
+            .on("tick", ticked);
+        
+        simulation.force("link")
+            .links(links);
+    
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+    
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+    
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    
+        function ticked() {
+            link
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+    
+            node
+                .attr('transform', d => `translate(${d.x}, ${d.y})`); 
+        }
     
         // Show course info function
         function show_course_info(d, clickedNode) {
@@ -189,8 +236,8 @@ d3.json("data/course_data.json").then(function(courseData) {
             d3.select(clickedNode).select("circle").attr("fill", "#0d1b2a"); // Highlight the clicked node
     
             const connectedSources = new Set(links
-                .filter(l => l.target === d.course_id) // Change to filter by target
-                .map(l => l.source)); // Get the corresponding sources
+                .filter(l => l.target.course_id === d.course_id) // Change to filter by target
+                .map(l => l.source.course_id)); // Get the corresponding sources
             
             svg.selectAll("g.node")
                 .select("circle")
@@ -232,6 +279,7 @@ d3.json("data/course_data.json").then(function(courseData) {
         createMapHeader(getSelectedCourseCodes(), document.getElementById("relDesc").value);
     }
     
+    
     // Hide course info function
     function hide_course_info() {
         const info = document.getElementById("course-info");
@@ -259,20 +307,24 @@ d3.json("data/course_data.json").then(function(courseData) {
             // Create a set of filtered node IDs
             const filteredNodeIds = new Set(codeFilteredCourseData.nodes.map(node => node.course_id));
     
+            console.log(filteredNodeIds);
+            console.log(courseData.links);
             // Filter links based on filtered nodes
             codeFilteredCourseData.links = courseData.links.filter(link =>
-                filteredNodeIds.has(link.source) && filteredNodeIds.has(link.target)
+                filteredNodeIds.has(link.source.course_id) && filteredNodeIds.has(link.target.course_id)
             );
         } else {
             // If no courses are selected, reset to all nodes and links
             codeFilteredCourseData = { ...courseData };
         }
+
+        console.log(codeFilteredCourseData);
     
         createNetwork(codeFilteredCourseData); // Recreate the network graph
     
         // Clear course info if current course is no longer in the network
         const info = document.getElementById("course-info");
-        const displayedCourseId = info.querySelector('p')?.id; // Get the ID of the first paragraph if it exists
+        const displayedCourseId = info.querySelector('p')?.course_id; // Get the ID of the first paragraph if it exists
     
         if (displayedCourseId && !codeFilteredCourseData.nodes.some(node => node.course_id === displayedCourseId)) {
             info.innerHTML = ""; // Clear course info if not present in the network
