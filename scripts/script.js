@@ -160,7 +160,11 @@ d3.json("data/course_data.json").then(function(courseData) {
             .call(d3.drag()
                 .on('start', dragstarted)
                 .on('drag', dragged)
-                .on('end', dragended));
+                .on('end', dragended))
+            .on("click", function(event, d) {
+                    show_course_info(d, this);
+                    event.stopPropagation(); // Prevent click from bubbling up to the document
+            });
         
         simulation
             .nodes(nodes)
