@@ -116,8 +116,9 @@ d3.json("data/course_data.json").then(function(courseData) {
     
         // Create a simulation
         const simulation = d3.forceSimulation()
-            .force('link', d3.forceLink().distance(75).id(d => d.course_id))
+            .force('link', d3.forceLink().distance(100).id(d => d.course_id))
             .force('charge', d3.forceManyBody().strength(-1))
+            .force("collide", d3.forceCollide(15).iterations(10))
             .force('center', d3.forceCenter((svg_dimensions.width / 2) - 100, (svg_dimensions.height / 2) - 75));
     
         const link = svg.append("g")
@@ -172,6 +173,17 @@ d3.json("data/course_data.json").then(function(courseData) {
         
         simulation.force("link")
             .links(links);
+
+        
+        // Stop the simulation after 5 seconds
+        // Will restart if nodes are dragged
+        function stopSimulationAfterDuration(duration) {
+            setTimeout(() => {
+                simulation.stop(); 
+                console.log("Simulation stopped");
+            }, duration);
+        }
+        stopSimulationAfterDuration(5000);
     
         function dragstarted(event, d) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
