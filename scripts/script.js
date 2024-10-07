@@ -116,9 +116,9 @@ d3.json("data/course_data.json").then(function(courseData) {
     
         // Create a simulation
         const simulation = d3.forceSimulation()
-            .force('link', d3.forceLink().distance(100).id(d => d.course_id))
-            .force('charge', d3.forceManyBody().strength(-10))
-            .force('center', d3.forceCenter((svg_dimensions.width / 2) - 100, (svg_dimensions.height / 2)));
+            .force('link', d3.forceLink().distance(75).id(d => d.course_id))
+            .force('charge', d3.forceManyBody().strength(-1))
+            .force('center', d3.forceCenter((svg_dimensions.width / 2) - 100, (svg_dimensions.height / 2) - 75));
     
         const link = svg.append("g")
             .attr("class", "links")
@@ -189,17 +189,36 @@ d3.json("data/course_data.json").then(function(courseData) {
             d.fx = null;
             d.fy = null;
         }
+
+        function checkBounds(d){
+            if (d.x < 0) d.x = 0;
+            if (d.x > width) d.x = width;
+            if (d.y < 0) d.y = -40;
+            if (d.y > height) d.y = height + 10;
+          }
     
         function ticked() {
             link
-                .attr('x1', d => d.source.x)
-                .attr('y1', d => d.source.y)
-                .attr('x2', d => d.target.x)
-                .attr('y2', d => d.target.y);
-    
-            node
-                .attr('transform', d => `translate(${d.x}, ${d.y})`); 
-        }
+            .attr("x1", function (d) { 
+                checkBounds(d.source);
+                return d.source.x; 
+              })
+            .attr("y1", function (d) { 
+                return d.source.y; 
+              })
+            .attr("x2", function (d) { 
+                checkBounds(d.target);
+                return d.target.x; 
+              })
+            .attr("y2", function (d) { 
+              return d.target.y; 
+              });
+          
+          node
+            .attr("transform", function (d) {
+              checkBounds(d);
+              return "translate(" + d.x + ", " + d.y + ")"});
+            }
     
         // Show course info function
         function show_course_info(d, clickedNode) {
