@@ -110,7 +110,6 @@ d3.json("data/course_data.json").then(function(courseData) {
 
     function createNetwork(courseData) {
         const { nodes, links } = courseData; 
-        console.log("In createNetwork function");
         // Clear previous content
         svg.selectAll("*").remove(); 
     
@@ -298,7 +297,6 @@ d3.json("data/course_data.json").then(function(courseData) {
     let codeFilteredCourseData; // Declare globally
 
     function onChange() {
-        console.log("In onChange function");
         const selectedCourseCodes = getSelectedCourseCodes(); // Get selected course codes
         codeFilteredCourseData = { ...courseData }; // Make a copy of courseData
     
@@ -311,8 +309,6 @@ d3.json("data/course_data.json").then(function(courseData) {
             // Create a set of filtered node IDs
             const filteredNodeIds = new Set(codeFilteredCourseData.nodes.map(node => node.course_id));
     
-            console.log(filteredNodeIds);
-            console.log(courseData.links);
             // Filter links based on filtered nodes
             codeFilteredCourseData.links = courseData.links.filter(link =>
                 filteredNodeIds.has(link.source.course_id) && filteredNodeIds.has(link.target.course_id)
@@ -321,8 +317,6 @@ d3.json("data/course_data.json").then(function(courseData) {
             // If no courses are selected, reset to all nodes and links
             codeFilteredCourseData = { ...courseData };
         }
-
-        console.log(codeFilteredCourseData);
     
         createNetwork(codeFilteredCourseData); // Recreate the network graph
     
@@ -370,7 +364,7 @@ d3.json("data/course_data.json").then(function(courseData) {
 
             // Filter links to only include those connecting filtered nodes
             filteredCourseData.links = filteredCourseData.links.filter(link => 
-                filteredNodeIds.has(link.source) && filteredNodeIds.has(link.target)
+                filteredNodeIds.has(link.source.course_id) && filteredNodeIds.has(link.target.course_id)
             );
 
             // Recreate the network with the filtered data
