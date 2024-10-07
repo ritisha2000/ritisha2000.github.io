@@ -96,6 +96,54 @@ h3 {
     font-family: 'Open Sans', sans-serif;
 }
 
+.dropdown-content {
+    display: flex; 
+    flex-direction: column; 
+    border-radius: 10px; 
+}
+
+.checkbox-label {
+    display: flex; 
+    align-items: baseline; 
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--form-background);
+    margin-right: 5px;
+    font-size: 14px; 
+    font-family: 'Open Sans', sans-serif;
+    font: inherit;
+    color: currentColor;
+    width: 1.0em;
+    height: 1.0em;
+    border: 0.12em solid currentColor;
+    border-radius: 0.5em;  
+    transform: translateY(-0.075em);
+    display: inline-grid;
+    place-content: center;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 0.5em;
+    transform: scale(0);
+    background-color: CanvasText;
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+input[type="checkbox"]:disabled {
+    --form-control-color: var(--form-control-disabled);
+    color: var(--form-control-disabled);
+    cursor: not-allowed;
+}
+
 .sidebar ul {
     padding-left: 0;
     margin-top: 0; /* Ensure no margin at the top of the list */

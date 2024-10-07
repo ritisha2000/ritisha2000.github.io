@@ -31,7 +31,7 @@ d3.json("data/course_data.json").then(function(courseData) {
 
             if (checkedBoxes.length > 3) {
                 checkbox.checked = false;
-                alert('You can only select up to 3 courses.');
+                alert('You can only select up to 3 course codes.');
             } else {
                 updateButtonText(); // Call the function to update the button text
             }
@@ -39,6 +39,7 @@ d3.json("data/course_data.json").then(function(courseData) {
 
         label.appendChild(checkbox);
         label.appendChild(document.createTextNode(d));
+        label.classList.add('checkbox-label'); 
         dropdownContent.appendChild(label);
     });
 
@@ -69,7 +70,7 @@ d3.json("data/course_data.json").then(function(courseData) {
         if (selectedCourses.length > 0) {
             btn.innerText = selectedCourses.join(', ');
         } else {
-            btn.innerText = 'Select up to 3 Courses';
+            btn.innerText = 'Select up to 3 Course Codes';
         }
     }
 
