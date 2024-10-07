@@ -82,7 +82,8 @@ h3 {
     box-sizing: border-box;
 }
 
-.sidebar .dropdown,
+.sidebar .dropdown-container,
+.sidebar .dropbtn,
 .sidebar .info-box,
 .sidebar .input,
 .sidebar .button {
@@ -90,6 +91,9 @@ h3 {
     width: 100%; 
     box-sizing: border-box;
     font-size: 14px; 
+    border: 0px;
+    border-radius: 10px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .sidebar ul {
